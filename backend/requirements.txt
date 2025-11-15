@@ -8,3 +8,5 @@ python-jose
 python-multipart
 alembic
 pydantic-settings
+email-validator
+bcrypt==4.3.0

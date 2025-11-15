@@ -4,7 +4,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "mysecretkey"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
-
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 2
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str

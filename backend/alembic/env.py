@@ -8,9 +8,9 @@ import os
 # add project root to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from core.config import settings
-from core.db import Base
-from models.users import User
+from app.core.config import settings
+from app.core.db import Base
+from app.models.users import User
 
 # Alembic Config object
 config = context.config
@@ -29,6 +29,23 @@ config.set_main_option("sqlalchemy.url",
                        f"{settings.POSTGRES_PORT}/"
                        f"{settings.POSTGRES_DB}")
 
+def include_object(object, name, type_, reflected, compare_to):
+    # skip dropping PostGIS/Tiger tables
+    if type_ == "table" and name in [
+        "state_lookup", "faces", "tabblock", "pagc_rules", "addr",
+        "layer", "bg", "county", "zip_state_loc", "loader_lookuptables",
+        "pagc_lex", "zip_state", "zip_lookup", "zip_lookup_base",
+        "zip_lookup_all", "loader_platform", "tabblock20", "addrfeat",
+        "state", "featnames", "geocode_settings_default", "place_lookup",
+        "loader_variables", "geocode_settings", "street_type_lookup",
+        "topology", "place", "pagc_gaz", "spatial_ref_sys", "edges",
+        "cousub", "county_lookup", "countysub_lookup", "direction_lookup",
+        "tract", "zcta5", "secondary_unit_lookup"
+    ]:
+        return False
+    return True
+
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
@@ -45,7 +62,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection, target_metadata=target_metadata, include_object=include_object)
         with context.begin_transaction():
             context.run_migrations()
 
